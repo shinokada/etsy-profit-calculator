@@ -10,12 +10,12 @@
 		Hr
 	} from 'svelte-5-ui-lib';
 
-	let salesPrice: number = $state(25);
-	let shippingPrice: number | null = $state(5.5);
+	let salesPrice: number = $state(0);
+	let shippingPrice: number | null = $state(0);
 	let dicountDollar: boolean = $state(false);
 	let dicountMethod: string = $derived(dicountDollar ? '$' : '%');
 	let dicountPlaceholder: string = $derived(dicountDollar ? 'Enter in dollars' : 'Enter in %');
-	let discountValue: number = $state(20);
+	let discountValue: number = $state(0);
 	let discountPrice: number = $derived(
 		dicountDollar ? Math.round(discountValue * 100) / 100 : salesPrice * (discountValue / 100)
 	);
@@ -24,8 +24,8 @@
 	);
 
 	// Costs
-	let costOfItem: number = $state(3.59);
-	let costOfShipping: number = $state(6.79);
+	let costOfItem: number = $state(0);
+	let costOfShipping: number = $state(0);
 	// Advertising
 	let adDollar: boolean = $state(false);
 	let adMethod: string = $derived(adDollar ? '$' : '%');
@@ -58,19 +58,19 @@
 		) / 100
 	);
 	// TAX
-	let mvaCostPercentage: number = $state(25);
+	let vatCostPercentage: number = $state(25);
 	let costAndShipping: number = $derived(Number(costOfItem) + Number(costOfShipping));
-	let mvaCosts = $derived(
-		Math.round(Number(costAndShipping) * Number(mvaCostPercentage / 100) * 100) / 100
+	let vatCosts = $derived(
+		Math.round(Number(costAndShipping) * Number(vatCostPercentage / 100) * 100) / 100
 	);
-	let mvaEtsyPercentage: number = $state(25);
-	let mvaEtsy = $derived(
-		Math.round(Number(totalFees) * Number(mvaEtsyPercentage / 100) * 100) / 100
+	let vatEtsyPercentage: number = $state(0);
+	let vatEtsy = $derived(
+		Math.round(Number(totalFees) * Number(vatEtsyPercentage / 100) * 100) / 100
 	);
 	// Total CoGS+Shipping
 	let totalCoGSAndShipping = $derived(
 		Math.round(
-			(Number(costOfItem) + Number(costOfShipping) + Number(mvaCosts) + Number(mvaEtsy)) * 100
+			(Number(costOfItem) + Number(costOfShipping) + Number(vatCosts) + Number(vatEtsy)) * 100
 		) / 100
 	);
 	// Total
@@ -106,15 +106,15 @@
 		</div>
 		<div class="space-y-4">
 			<Heading tag="h3">Tax</Heading>
-			<Label>MVA Percentage on Cost & Shipping</Label>
+			<Label>VAT Percentage on Cost & Shipping</Label>
 			<ButtonGroup class="w-full">
 				<InputAddon>%</InputAddon>
-				<Input placeholder="Enter MVA of costs" bind:value={mvaCostPercentage as number} />
+				<Input placeholder="Enter VAT of costs" bind:value={vatCostPercentage as number} />
 			</ButtonGroup>
-			<Label>MVA Percentage on Etsy Fees</Label>
+			<Label>VAT Percentage on Etsy Fees</Label>
 			<ButtonGroup class="w-full">
 				<InputAddon>%</InputAddon>
-				<Input placeholder="Enter MVA of Etsy" bind:value={mvaEtsyPercentage as number} />
+				<Input placeholder="Enter VAT of Etsy" bind:value={vatEtsyPercentage as number} />
 			</ButtonGroup>
 		</div>
 		<div class="space-y-4">
@@ -129,7 +129,7 @@
 			<Input placeholder="Enter off-site ads" bind:value={offsiteAd as number} />
 		</div>
 	</div>
-	<div class="space-y-8 bg-[#002753] p-8 text-white">
+	<div class="space-y-8 bg-[#00533d] p-8 text-white">
 		<Heading tag="h2" class="text-white">Summary</Heading>
 		<div class="space-y-4">
 			<Heading tag="h3" class="text-white">Revenue</Heading>
@@ -167,10 +167,10 @@
 			${salesPrice ? costOfItem : 0}
 			<Label class="text-white">Cost of Shipping</Label>
 			${salesPrice ? costOfShipping : 0}
-			<Label class="text-white">MVA on Etsy Fees</Label>
-			${salesPrice && mvaEtsyPercentage ? mvaEtsy : 0}
-			<Label class="text-white">MVA on Cost & Shipping</Label>
-			${salesPrice && mvaCostPercentage ? mvaCosts.toFixed(2) : 0}
+			<Label class="text-white">VAT on Etsy Fees</Label>
+			${salesPrice && vatEtsyPercentage ? vatEtsy : 0}
+			<Label class="text-white">VAT on Cost & Shipping</Label>
+			${salesPrice && vatCostPercentage ? vatCosts.toFixed(2) : 0}
 			<Heading tag="h4" class="text-white">Total CoGS+Shipping</Heading>
 			${salesPrice ? totalCoGSAndShipping.toFixed(2) : 0}
 		</div>
