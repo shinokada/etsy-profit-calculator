@@ -57,8 +57,9 @@
 				100
 		) / 100
 	);
+  $inspect('fees: ', etsyListingFees, transactionFee, paymentProcessingFee, adPrice, offsiteAd);
 	// TAX
-	let vatCostPercentage: number = $state(25);
+	let vatCostPercentage: number = $state(0);
 	let costAndShipping: number = $derived(Number(costOfItem) + Number(costOfShipping));
 	let vatCosts = $derived(
 		Math.round(Number(costAndShipping) * Number(vatCostPercentage / 100) * 100) / 100
@@ -75,6 +76,7 @@
 	);
 	// Total
 	let totalCosts = $derived(Number(totalFees) + Number(totalCoGSAndShipping));
+  $inspect('totalCosts', totalFees, totalCoGSAndShipping);
 	let netProfit = $derived(Math.round((Number(totalRevenue) - Number(totalCosts)) * 100) / 100);
 	let netProfitMargin = $derived(Math.round((Number(netProfit) / Number(totalRevenue)) * 100));
 </script>
@@ -177,14 +179,14 @@
 
 		<div class="space-y-4">
 			<Heading tag="h4" class="text-white">Total Revenue</Heading>
-			${totalRevenue}
+			${salesPrice ? totalRevenue : 0}
 			<Heading tag="h4" class="text-white">Total Costs</Heading>
-			${totalCosts}
+			${salesPrice ? totalCosts : 0}
 			<Hr />
 			<Heading tag="h4" class="text-white">Net Profit</Heading>
-			${netProfit}
+			${salesPrice ? netProfit : 0}
 			<Heading tag="h4" class="text-white">Net Profit Margin</Heading>
-			{netProfitMargin} %
+			{salesPrice ? netProfitMargin : 0} %
 		</div>
 	</div>
 </Layout>
