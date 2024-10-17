@@ -136,55 +136,55 @@
 		<div class="space-y-4">
 			<Heading tag="h3" class="text-white">Revenue</Heading>
 			<Label class="text-white">Sales</Label>
-			${salesPrice ? salesPrice : 0}
+			$ {salesPrice ? salesPrice : 0}
 			<Label class="text-white">Shipping Price</Label>
-			${shippingPrice ? shippingPrice : 0}
+			$ {shippingPrice ? shippingPrice : 0}
 			<Label class="text-white">Discount</Label>
-			${discountPrice ? discountPrice.toFixed(2) : 0}
+			$ {discountPrice ? discountPrice.toFixed(2) : 0}
 			<Heading tag="h4" class="text-white">Total Revenue</Heading>
-			${salesPrice ? salesPrice : 0} + ${shippingPrice ? shippingPrice : 0} - ${discountPrice
+			$ {salesPrice ? salesPrice : 0} + $ {shippingPrice ? shippingPrice : 0} - $ {discountPrice
 				? discountPrice.toFixed(2)
-				: 0} = ${totalRevenue}
+				: 0} = $ {totalRevenue}
 			<Hr />
 		</div>
 
 		<div class="space-y-4">
 			<Heading tag="h3" class="text-white">Costs</Heading>
 			<Label class="text-white">Etsy Listing Fees</Label>
-			${salesPrice ? etsyListingFees : 0}
+			$ {salesPrice ? etsyListingFees : 0}
 			<Label class="text-white">Transaction Fees</Label>
-			${salesPrice ? transactionFee.toFixed(2) : 0}
+			$ {salesPrice ? transactionFee.toFixed(2) : 0}
 			<Label class="text-white">Payment Processing Fees</Label>
-			${salesPrice ? paymentProcessingFee : 0}
+			$ {salesPrice ? paymentProcessingFee : 0}
 			<Label class="text-white">Advertising Costs</Label>
-			${salesPrice ? adPrice : 0}
+			$ {salesPrice ? adPrice : 0}
 			<Label class="text-white">Off-site Ads</Label>
-			${salesPrice ? offsiteAd : 0}
+			$ {salesPrice ? offsiteAd : 0}
 			<Heading tag="h4" class="text-white">Total Fees</Heading>
-			${salesPrice ? totalFees : 0}
+			$ {salesPrice ? totalFees : 0}
 			<Hr />
 		</div>
 		<div class="space-y-4">
 			<Label class="text-white">Cost of Goods Sold</Label>
-			${salesPrice ? costOfItem : 0}
+			$ {salesPrice ? costOfItem : 0}
 			<Label class="text-white">Cost of Shipping</Label>
-			${salesPrice ? costOfShipping : 0}
+			$ {salesPrice ? costOfShipping : 0}
 			<Label class="text-white">VAT on Etsy Fees</Label>
-			${salesPrice && vatEtsyPercentage ? vatEtsy : 0}
+			$ {salesPrice && vatEtsyPercentage ? vatEtsy : 0}
 			<Label class="text-white">VAT on Cost & Shipping</Label>
-			${salesPrice && vatCostPercentage ? vatCosts.toFixed(2) : 0}
+			$ {salesPrice && vatCostPercentage ? vatCosts.toFixed(2) : 0}
 			<Heading tag="h4" class="text-white">Total CoGS+Shipping</Heading>
-			${salesPrice ? totalCoGSAndShipping.toFixed(2) : 0}
+			$ {salesPrice ? totalCoGSAndShipping.toFixed(2) : 0}
 		</div>
 
 		<div class="space-y-4">
 			<Heading tag="h4" class="text-white">Total Revenue</Heading>
-			${salesPrice ? totalRevenue : 0}
+			$ {salesPrice ? totalRevenue : 0}
 			<Heading tag="h4" class="text-white">Total Costs</Heading>
-			${salesPrice ? totalCosts : 0}
+			$ {salesPrice ? totalCosts : 0}
 			<Hr />
 			<Heading tag="h4" class="text-white">Net Profit</Heading>
-			${salesPrice ? netProfit : 0}
+			$ {salesPrice ? netProfit : 0}
 			<Heading tag="h4" class="text-white">Net Profit Margin</Heading>
 			{salesPrice ? netProfitMargin : 0} %
 		</div>
