@@ -83,7 +83,7 @@
 	<div class="space-y-8">
 		<Heading tag="h1" class="mb-8 text-primary-600">Etsy Profit Calculator</Heading>
 		<div class="space-y-4">
-			<Heading tag="h3">Revenue</Heading>
+			<Heading tag="h3" class="text-secondary-800">Revenue</Heading>
 			<Label>Sales Price</Label>
 			<Input placeholder="Enter sales price" bind:value={salesPrice as number} />
 			<Label>Shipping Price</Label>
@@ -98,14 +98,14 @@
 			</ButtonGroup>
 		</div>
 		<div class="space-y-4">
-			<Heading tag="h3">Costs</Heading>
+			<Heading tag="h3" class="text-secondary-800">Costs</Heading>
 			<Label>Cost of Item</Label>
 			<Input placeholder="Enter cost of item" bind:value={costOfItem as number} />
 			<Label>Cost of Shipping</Label>
 			<Input placeholder="Enter cost of shipping" bind:value={costOfShipping as number} />
 		</div>
 		<div class="space-y-4">
-			<Heading tag="h3">Tax</Heading>
+			<Heading tag="h3" class="text-secondary-800">Tax</Heading>
 			<Label>VAT Percentage on Cost & Shipping</Label>
 			<ButtonGroup class="w-full">
 				<InputAddon>%</InputAddon>
@@ -118,7 +118,7 @@
 			</ButtonGroup>
 		</div>
 		<div class="space-y-4">
-			<Heading tag="h3">Advertising</Heading>
+			<Heading tag="h3" class="text-secondary-800">Advertising</Heading>
 			<Label>Etsy Adds-Est. ACoS</Label>
 			<Toggle bind:checked={adDollar}>Method (% | $)</Toggle>
 			<ButtonGroup class="w-full">
