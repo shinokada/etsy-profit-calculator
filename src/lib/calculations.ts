@@ -2,7 +2,9 @@ import {
   ETSY_LISTING_FEE,
   ETSY_TRANSACTION_PERCENTAGE,
   PAYMENT_PROCESSING_PERCENTAGE,
-  PAYMENT_PROCESSING_FIXED_FEE
+  PAYMENT_PROCESSING_FIXED_FEE,
+  ETSY_OFFSITE_AD_PERCENTAGE_MORE_THAN_10K_SALES,
+  ETSY_OFFSITE_AD_PERCENTAGE_LESS_THAN_10K_SALES
 } from './constants';
 
 export function calculateDiscount(dicountDollar: boolean, discountValue: number, salesPrice: number): number {
@@ -13,19 +15,18 @@ export function calculateAdPrice( adDollar: boolean, adValue: number, salesPrice
   return adDollar ? adValue : (salesPrice - discountPrice) * (adValue / 100)
 }
 
-export function calculateEtsyTransactionFee(salesPrice: number, shippingPrice: number): number {
-  return (salesPrice + shippingPrice) * ETSY_TRANSACTION_PERCENTAGE / 100;
+export function calculateEtsyTransactionFee(salesPrice: number, shippingPrice: number, discountPrice: number): number {
+  return (salesPrice + shippingPrice - discountPrice) * ETSY_TRANSACTION_PERCENTAGE / 100;
 }
 
-// salesPrice, shippingPrice, discountPercentage, vatPercentageOnEtsyFees
 export function calculateTotalFees(salesPrice: number, shippingPrice: number, discountPrice: number, adPrice: number): number {
-  // etsy listing fees + transaction fees + payment processing fees + advertising costs
-  let etsytransactionFee = calculateEtsyTransactionFee(salesPrice, shippingPrice);
+  let etsytransactionFee = calculateEtsyTransactionFee(salesPrice, shippingPrice, discountPrice);
   let paymentProcessingFee = calculatePaymentProcessingFee(salesPrice, shippingPrice, discountPrice);
   
   return ETSY_LISTING_FEE + etsytransactionFee + paymentProcessingFee + adPrice;
 }
 
+// 25% MVA of total Etsy fees + Cost of Goods Sold + Shipping Cost + 25% MVA of costs
 export function calculateTotalCoGSAndShipping(costOfItem: number, shippingCostForOrder: number): number {
   return costOfItem + shippingCostForOrder;
 }

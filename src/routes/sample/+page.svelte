@@ -7,7 +7,7 @@
 		Layout,
 		InputAddon,
 		ButtonGroup,
-		Hr
+		Hr, Radio, Checkbox
 	} from 'svelte-5-ui-lib';
 
 import {
@@ -44,8 +44,13 @@ import {
   // Derived values
   let dicountMethod: string = $derived(dicountDollar ? '$' : '%');
   let dicountPlaceholder: string = $derived(dicountDollar ? 'Enter discount amount' : 'Enter discount percentage');
+
+  // Advertising
+  let lessThan10k = $state(false);
+  let offsiteAdMethod: string = $derived(lessThan10k ? '15%' : '12%');
   let adMethod: string = $derived(adDollar ? '$' : '%');
   let adPlaceholder: string = $derived(adDollar ? 'Enter ad amount' : 'Enter ad percentage');
+  let shopEarning = $state(false);
 
   let discountPrice: number = $derived(calculateDiscount(dicountDollar, discountValue, salesPrice));
 
@@ -54,7 +59,7 @@ import {
   let totalRevenue: number = $derived(calculateTotalRevenue(salesPrice, shippingPrice, discountPrice));
 
   let etsyListingFees: number = ETSY_LISTING_FEE;
-  let transactionFee: number = $derived(calculateEtsyTransactionFee(salesPrice, shippingPrice));
+  let transactionFee: number = $derived(calculateEtsyTransactionFee(salesPrice, shippingPrice, discountPrice));
   let paymentProcessingFee: number = $derived(calculatePaymentProcessingFee(salesPrice, shippingPrice, discountPrice));
 
   let totalFees: number = $derived(calculateTotalFees(salesPrice, shippingPrice, discountPrice, adPrice));
@@ -62,18 +67,20 @@ import {
   let vatEtsy: number = $derived(calculateVatEtsy(totalFees, vatEtsyPercentage));
   let vatCosts: number = $derived(calculateVatCosts(costOfItem, costOfShipping, vatCostPercentage));
 
+
+
   let totalCoGSAndShipping: number = $derived(calculateTotalCoGSAndShipping(costOfItem, costOfShipping) + vatCosts);
 
   let totalCosts: number = $derived(calculateTotalCosts(costOfItem, costOfShipping, vatCostPercentage / 100) + totalFees + vatEtsy);
 
-  // let netProfit: number = $derived(totalRevenue - totalCosts);
+  let netProfit: number = $derived(totalRevenue - totalCosts);
 
-  // let netProfitMargin: number = $derived((netProfit / totalRevenue) * 100);
+  let netProfitMargin: number = $derived((netProfit / totalRevenue) * 100);
 
-  let netProfit: number = $derived(calculateNetProfit(salesPrice, shippingPrice, discountValue, vatCostPercentage, vatEtsyPercentage, adValue, offsiteAd, discountPrice));
-  $inspect('netProfitByfn', netProfit);
-  let netProfitMargin: number = $derived(calculateNetProfitMargin(salesPrice, shippingPrice, discountValue, vatCostPercentage, vatEtsyPercentage, adValue, offsiteAd));
-  $inspect('netProfitMarginByfn', netProfitMargin);
+  // let netProfit: number = $derived(calculateNetProfit(salesPrice, shippingPrice, discountValue, vatCostPercentage, vatEtsyPercentage, adValue, offsiteAd, discountPrice));
+  // $inspect('netProfitByfn', netProfit);
+  // let netProfitMargin: number = $derived(calculateNetProfitMargin(salesPrice, shippingPrice, discountValue, vatCostPercentage, vatEtsyPercentage, adValue, offsiteAd));
+  // $inspect('netProfitMarginByfn', netProfitMargin);
 </script>
 
 
@@ -117,14 +124,19 @@ import {
   </div>
   <div class="space-y-4">
     <Heading tag="h3" class="text-secondary-800">Advertising</Heading>
-    <Label>Etsy Adds-Est. ACoS</Label>
+    <Label>Etsy Adds-Estimate Average Cost of Sale</Label>
     <Toggle bind:checked={adDollar}>Method (% | $)</Toggle>
     <ButtonGroup class="w-full">
       <InputAddon>{adMethod}</InputAddon>
       <Input type="number" placeholder={adPlaceholder} bind:value={adValue as number} />
     </ButtonGroup>
-    <Label>Off-site Ads</Label>
-    <Input type="number" placeholder="Enter off-site ads" bind:value={offsiteAd as number} />
+    <Label>Shop Earnings (last 365 days)</Label>
+    
+    <Toggle bind:checked={lessThan10k}>Method (15% | 12%)</Toggle>
+      <ButtonGroup class="w-full">
+        <InputAddon>{offsiteAdMethod}</InputAddon>
+        <Input type="number" placeholder="Enter off-site ads" bind:value={offsiteAd as number} />
+      </ButtonGroup>
   </div>
 </div>
 <div class="space-y-8 bg-[#00533d] p-8 text-white">
