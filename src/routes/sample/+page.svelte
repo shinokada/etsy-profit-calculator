@@ -51,6 +51,7 @@ import {
   let adMethod: string = $derived(adDollar ? '$' : '%');
   let adPlaceholder: string = $derived(adDollar ? 'Enter ad amount' : 'Enter ad percentage');
   let shopEarning = $state(false);
+  let offsiteAdOptin = $state(false);
 
   let discountPrice: number = $derived(calculateDiscount(dicountDollar, discountValue, salesPrice));
 
@@ -131,7 +132,21 @@ import {
       <Input type="number" placeholder={adPlaceholder} bind:value={adValue as number} />
     </ButtonGroup>
     <Label>Shop Earnings (last 365 days)</Label>
-    
+    <Checkbox custom bind:checked={shopEarning as boolean}>
+      <div class="w-full cursor-pointer rounded-lg border-2 border-gray-200 bg-white p-5 font-normal text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-primary-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300">
+        <div class="w-full text-lg font-semibold">$10,000+</div>
+        <div class="w-full text-sm">A JavaScript library for building user interfaces.</div>
+      </div>
+    </Checkbox>
+    <Checkbox custom bind:checked={offsiteAdOptin as boolean}>
+      <div class="w-full cursor-pointer rounded-lg border-2 border-gray-200 bg-white p-5 font-normal text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-primary-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300">
+        <div class="w-full text-lg font-semibold">Vue Js</div>
+        <div class="w-full text-sm">Vue.js is an model–view front end JavaScript framework.</div>
+      </div>
+    </Checkbox>
+    {#if shopEarning === true}
+     12% charge
+    {/if}
     <Toggle bind:checked={lessThan10k}>Method (15% | 12%)</Toggle>
       <ButtonGroup class="w-full">
         <InputAddon>{offsiteAdMethod}</InputAddon>
