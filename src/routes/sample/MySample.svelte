@@ -14,7 +14,7 @@ import {
   calculateTotalFees,
   calculateTotalCoGSAndShipping,
   calculateTotalRevenue,
-  calculateTotalCosts,
+  calculateTotalCost,
   calculateNetProfit,
   calculateNetProfitMargin
 } from '$lib/calculations';
@@ -74,7 +74,7 @@ let vatCosts: number = $derived((costOfItem + costOfShipping) * (vatCostPercenta
 
 let totalCoGSAndShipping: number = $derived(calculateTotalCoGSAndShipping(costOfItem, costOfShipping) + vatCosts);
 
-let totalCosts: number = $derived(calculateTotalCosts(costOfItem, costOfShipping, vatCostPercentage / 100) + totalFees + vatEtsy);
+let totalCosts: number = $derived(calculateTotalCost(costOfItem, costOfShipping, vatCostPercentage / 100) + totalFees + vatEtsy);
 
 let netProfit: number = $derived(totalRevenue - totalCosts);
 

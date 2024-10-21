@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { calculateTotalFees, calculateDiscount, calculateAdPrice, calculateTotalCoGSAndShipping, calculateTotalRevenue, calculateEtsyTransactionFee, calculatePaymentProcessingFee, calculateOffsiteAdPrice, calculateVatEtsyFees, calculateVatOnCosts, calculateTotalTax, calculateTotalCosts, calculateNetProfit, calculateNetProfitMargin } from './lib/calculations';
+import { calculateTotalFees, calculateDiscount, calculateEtsyAdPrice, calculateTotalCoGSAndShipping, calculateTotalRevenue, calculateEtsyTransactionFee, calculatePaymentProcessingFee, calculateOffsiteAdPrice, calculateVatEtsyFees, calculateVatOnCosts, calculateTotalTax, calculateTotalCost, calculateNetProfit, calculateNetProfitMargin } from './lib/calculations';
 
 // condition values
 const salesPrice = 25;
@@ -15,13 +15,13 @@ const adValue = 0;
 const offsitePercentage = 0;
 // calculated values
 const discountPrice: number = calculateDiscount(dicountDollar, discountPercentage, salesPrice);
-let etsyAds: number = calculateAdPrice(adDollar,adValue, salesPrice, discountPrice);
+let etsyAds: number = calculateEtsyAdPrice(adDollar,adValue, salesPrice, discountPrice);
 let offsiteAds: number = calculateOffsiteAdPrice(salesPrice, discountPrice, offsitePercentage);
 const totalFees: number = calculateTotalFees(salesPrice, shippingPrice, discountPrice, etsyAds, offsiteAds);
 const vatonEtsyFees: number = calculateVatEtsyFees(totalFees, vatPercentageOnEtsyFees);
 const vatOnCost: number = calculateVatOnCosts(costOfItem, shippingCostForOrder, vatPercentageOnCostAndShipping);
 const totalTax = calculateTotalTax(vatonEtsyFees, vatOnCost)
-const totalCost = calculateTotalCosts(totalFees, costOfItem, shippingCostForOrder)
+const totalCost = calculateTotalCost(totalFees, costOfItem, shippingCostForOrder)
 const totalRevenue = calculateTotalRevenue(salesPrice, shippingPrice, discountPrice)
 const netProfit = calculateNetProfit(totalRevenue, totalCost, totalTax)
 
@@ -31,9 +31,9 @@ describe('calculateDiscount', () => {
   });
 });
 
-describe('calculateAdPrice', () => {
+describe('calculateEtsyAdPrice', () => {
   it('calculates Ad price', () => {
-    expect(calculateAdPrice(adDollar, adValue, salesPrice, discountPrice)).toBeCloseTo(0, 2);
+    expect(calculateEtsyAdPrice(adDollar, adValue, salesPrice, discountPrice)).toBeCloseTo(0, 2);
   });
 });
 
@@ -80,10 +80,10 @@ describe('calculateTotalTax', () => {
   });
 });
 
-// calculateTotalCosts(totalFees: number, costOfItem: number, shippingCostForOrder: number)
-describe('calculateTotalCosts', () => {
+// calculateTotalCost(totalFees: number, costOfItem: number, shippingCostForOrder: number)
+describe('calculateTotalCost', () => {
   it('calculates total costs', () => {
-    expect(calculateTotalCosts(totalFees, costOfItem, shippingCostForOrder)).toBeCloseTo(13.253, 3);
+    expect(calculateTotalCost(totalFees, costOfItem, shippingCostForOrder)).toBeCloseTo(13.253, 3);
   });
 });
 
@@ -102,7 +102,7 @@ describe('calculateNetProfit(totalRevenue: number, totalCost: number, totalTax: 
 })
 
 
-// calculateNetProfit(totalRevenue: number, totalCost: number, totalTax: number)
+// calculateNetProfitMargin(netProfit: number, totalRevenue: number)
 describe('calculateNetProfitMargin', () => {
   it('calculate net profit margin', () => {
     expect(calculateNetProfitMargin(netProfit, totalRevenue)).toBeCloseTo(35.04, 2);

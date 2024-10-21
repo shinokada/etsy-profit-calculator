@@ -7,23 +7,24 @@
   Layout,
   InputAddon,
   ButtonGroup,
-  Hr
+  Hr, Radio, Checkbox, Span
 } from 'svelte-5-ui-lib';
 
 import {
   calculateTotalFees,
   calculateTotalCoGSAndShipping,
   calculateTotalRevenue,
-  calculateTotalCosts,
+  calculateTotalCost,
   calculateNetProfit,
   calculateNetProfitMargin,
   calculateDiscount,
-  calculateAdPrice,
+  calculateEtsyAdPrice,
+  calculateOffsiteAdPrice,
   calculatePaymentProcessingFee,
   calculateVatEtsyFees,
   calculateVatOnCosts,
   calculateEtsyTransactionFee,
-  calculateOffsiteAdPrice
+  calculateTotalTax
 } from '$lib/calculations';
 import {
   ETSY_LISTING_FEE
@@ -33,56 +34,64 @@ import {
 let salesPrice = $state(0);
 let shippingPrice = $state(0);
 let discountValue = $state(0);
-let dicountDollar = $state(false);
+let isAdPriceInDollars = $state(false);
 let costOfItem = $state(0);
 let costOfShipping = $state(0);
 let vatCostPercentage = $state(0);
 let vatEtsyPercentage = $state(0);
-let adValue = $state(0);
-let adDollar = $state(false);
-let offsiteAd = $state(0);
+let etsyAdValue = $state(0);
+let isEtsyAdPriceInDollars = $state(false);
+let hasEtsyAds = $state(false);
+let hasOffsiteAds = $state(false);
+let offsitePercentage = $state(0)
 $inspect('typeof salesPrice', typeof salesPrice);
 // Derived values
-let dicountMethod: string = $derived(dicountDollar ? '$' : '%');
-let dicountPlaceholder: string = $derived(dicountDollar ? 'Enter discount amount' : 'Enter discount percentage');
-let adMethod: string = $derived(adDollar ? '$' : '%');
-let adPlaceholder: string = $derived(adDollar ? 'Enter ad amount' : 'Enter ad percentage');
+let dicountMethod: string = $derived(isAdPriceInDollars ? '$' : '%');
+let dicountPlaceholder: string = $derived(isAdPriceInDollars ? 'Enter discount amount' : 'Enter discount percentage');
 
-let discountPrice: number = $derived(calculateDiscount(dicountDollar, discountValue, salesPrice));
+// Advertising
+let etsyAdMethod: string = $derived(isEtsyAdPriceInDollars ? '$' : '%');
+let adPlaceholder: string = $derived(isEtsyAdPriceInDollars ? 'Enter ad amount' : 'Enter ad percentage');
+// etsyAds
+let discountPrice: number = $derived(calculateDiscount(isAdPriceInDollars, discountValue, salesPrice));
+let etsyAdsPrice: number =  $derived(calculateEtsyAdPrice(isEtsyAdPriceInDollars, etsyAdValue, salesPrice, discountPrice, hasEtsyAds));
+// off-site ads
+let offsiteAdsPrice: number = $derived(calculateOffsiteAdPrice(salesPrice, discountPrice, offsitePercentage, hasOffsiteAds));
 
-let adPrice: number = $derived(calculateAdPrice(adDollar, adValue, salesPrice, discountPrice));
+let totalAdvertising: number = $derived(etsyAdsPrice + offsiteAdsPrice);
 
 let totalRevenue: number = $derived(calculateTotalRevenue(salesPrice, shippingPrice, discountPrice));
 
 let etsyListingFees: number = ETSY_LISTING_FEE;
+
 let transactionFee: number = $derived(calculateEtsyTransactionFee(salesPrice, shippingPrice, discountPrice));
+
 let paymentProcessingFee: number = $derived(calculatePaymentProcessingFee(salesPrice, shippingPrice, discountPrice));
 
-let etsyAds: number = $derived(calculateAdPrice(adDollar,adValue, salesPrice, discountPrice));
-let offsiteAds: number = $derived(calculateOffsiteAdPrice(salesPrice, discountPrice, offsitePercentage));
-let totalFees: number = $derived(calculateTotalFees(salesPrice, shippingPrice, discountPrice, etsyAds, offsiteAds));
+let totalFees: number = $derived(calculateTotalFees(salesPrice, shippingPrice, discountPrice, etsyAdsPrice, offsiteAdsPrice));
 
-let vatEtsy: number = $derived(calculateVatEtsyFees(totalFees, vatEtsyPercentage));
-let vatCosts: number = $derived(calculateVatOnCosts(costOfItem, costOfShipping, vatCostPercentage));
+// Tax
+let vatonEtsyFees: number = $derived(calculateVatEtsyFees(totalFees, vatEtsyPercentage));
 
-let totalCoGSAndShipping: number = $derived(calculateTotalCoGSAndShipping(costOfItem, costOfShipping) + vatCosts);
+let vatOnCost: number = $derived(calculateVatOnCosts(costOfItem, costOfShipping, vatCostPercentage));
 
-let totalCosts: number = $derived(calculateTotalCosts(costOfItem, costOfShipping, vatCostPercentage / 100) + totalFees + vatEtsy);
+let totalTax: number = $derived(calculateTotalTax(vatonEtsyFees, vatOnCost))
 
-// let netProfit: number = $derived(totalRevenue - totalCosts);
+let totalCoGSAndShipping: number = $derived(calculateTotalCoGSAndShipping(costOfItem, costOfShipping) + vatOnCost);
 
-// let netProfitMargin: number = $derived((netProfit / totalRevenue) * 100);
+// totalFees: number, costOfItem: number, shippingCostForOrder: number
+let totalCost: number = $derived(calculateTotalCost(totalFees, costOfItem, costOfShipping));
 
-let netProfit: number = $derived(calculateNetProfit(salesPrice, shippingPrice, discountValue, vatCostPercentage, vatEtsyPercentage, adValue, offsiteAd, discountPrice));
-$inspect('netProfitByfn', netProfit);
-let netProfitMargin: number = $derived(calculateNetProfitMargin(salesPrice, shippingPrice, discountValue, vatCostPercentage, vatEtsyPercentage, adValue, offsiteAd));
-$inspect('netProfitMarginByfn', netProfitMargin);
+// totalRevenue, totalCost, totalTax
+let netProfit: number = $derived(calculateNetProfit(totalRevenue, totalCost, totalTax));
+// calculateNetProfit(totalRevenue: number, totalCost: number, totalTax: number)
+let netProfitMargin: number = $derived(calculateNetProfitMargin(netProfit, totalRevenue));
 </script>
 
 
 <Layout class="gap-6">
 <div class="space-y-8">
-<Heading tag="h1" class="mb-8 text-primary-600">Etsy Profit Calculator</Heading>
+<Heading tag="h1" class="mb-8 text-primary-600"><Span uppercase>Etsy Profit Calculator</Span></Heading>
 <div class="space-y-4">
   <Heading tag="h3" class="text-secondary-800">Revenue</Heading>
   <Label>Sales Price</Label>
@@ -90,11 +99,11 @@ $inspect('netProfitMarginByfn', netProfitMargin);
   <Label>Shipping Price</Label>
   <Input type="number" placeholder="Enter shipping price" bind:value={shippingPrice as number} />
   <Label>Discount</Label>
-  <Toggle bind:checked={dicountDollar}>
-    Method (% | $) ({dicountMethod})
+  <Toggle bind:checked={isAdPriceInDollars}>
+    Method (% | $)
   </Toggle>
   <ButtonGroup class="w-full">
-    <InputAddon>{dicountMethod}</InputAddon>
+    <InputAddon class="w-9">{dicountMethod}</InputAddon>
     <Input type="number" placeholder={dicountPlaceholder} bind:value={discountValue as number} />
   </ButtonGroup>
 </div>
@@ -120,14 +129,35 @@ $inspect('netProfitMarginByfn', netProfitMargin);
 </div>
 <div class="space-y-4">
   <Heading tag="h3" class="text-secondary-800">Advertising</Heading>
-  <Label>Etsy Adds-Est. ACoS</Label>
-  <Toggle bind:checked={adDollar}>Method (% | $)</Toggle>
+  <Checkbox custom bind:checked={hasEtsyAds as boolean}>
+    <div class="w-full cursor-pointer rounded-lg border-2 border-gray-200 bg-white p-5 font-normal text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-primary-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300">
+      <div class="w-full text-lg font-semibold">Etsy Ads</div>
+      <div class="w-full text-sm">Average Cost of Sale</div>
+    </div>
+  </Checkbox>
+  hasEtsyAds: {hasEtsyAds}
+  {#if hasEtsyAds}
+  <Toggle bind:checked={isEtsyAdPriceInDollars}>Method (% | $)</Toggle>
   <ButtonGroup class="w-full">
-    <InputAddon>{adMethod}</InputAddon>
-    <Input type="number" placeholder={adPlaceholder} bind:value={adValue as number} />
+    <InputAddon class="w-9">{etsyAdMethod}</InputAddon>
+    <Input type="number" placeholder={adPlaceholder} bind:value={etsyAdValue as number} />
   </ButtonGroup>
-  <Label>Off-site Ads</Label>
-  <Input type="number" placeholder="Enter off-site ads" bind:value={offsiteAd as number} />
+  etsyAdMethod: {etsyAdMethod}
+  etsyAdValue: {etsyAdValue}
+  {/if}
+  <Checkbox custom bind:checked={hasOffsiteAds as boolean}>
+    <div class="w-full cursor-pointer rounded-lg border-2 border-gray-200 bg-white p-5 font-normal text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-primary-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300">
+      <div class="w-full text-lg font-semibold">Etsy Off-site Ads</div>
+      <div class="w-full text-sm">If your Etsy shop made less than $10,000 USD, you'll be charged a 15% fee for an order. Otherwise, you'll be charged a 12% fee.</div>
+    </div>
+  </Checkbox>
+  {#if hasOffsiteAds === true}
+    <Radio name="etsyAdsPercent" bind:group={offsitePercentage} value="0">0%</Radio>
+    <Radio name="etsyAdsPercent" bind:group={offsitePercentage} value="12">12%</Radio>
+    <Radio name="etsyAdsPercent" bind:group={offsitePercentage} value="15">15%</Radio>
+  {/if}
+  hasOffsiteAds: {hasOffsiteAds}
+  offsitePercentage: {offsitePercentage}
 </div>
 </div>
 <div class="space-y-8 bg-[#00533d] p-8 text-white">
@@ -146,44 +176,62 @@ $inspect('netProfitMarginByfn', netProfitMargin);
 </div>
 
 <div class="space-y-4">
-  <Heading tag="h3" class="text-white">Costs</Heading>
+  <Heading tag="h3" class="text-white">FEES</Heading>
   <Label class="text-white">Etsy Listing Fees</Label>
   $ { salesPrice > 0 ? etsyListingFees.toFixed(2) : 0 }
   <Label class="text-white">Transaction Fees</Label>
   $ { transactionFee > 0 ? transactionFee.toFixed(2) : 0}
   <Label class="text-white">Payment Processing Fees</Label>
   $ { salesPrice > 0 ? paymentProcessingFee.toFixed(2) : 0}
-  <Label class="text-white">Advertising Costs</Label>
-  $ { adPrice > 0 ? adPrice.toFixed(2) : 0}
-  <Label class="text-white">Off-site Ads</Label>
-  $ { offsiteAd > 0 ? offsiteAd.toFixed(2) : 0}
   <Heading tag="h4" class="text-white">Total Fees</Heading>
   $ { salesPrice > 0 ? totalFees.toFixed(2) : 0}
   <Hr />
 </div>
+
+<div class="space-y-4">
+  <Heading tag="h3" class="text-white">Advertising Costs</Heading>
+  <Label class="text-white">Etsy Advertising Cost</Label>
+  $ { etsyAdsPrice > 0 ? etsyAdsPrice.toFixed(2) : 0}
+  <Label class="text-white">Off-site Advertising Cost</Label>
+  $ { offsiteAdsPrice > 0 ? offsiteAdsPrice.toFixed(2) : 0}
+  <Heading tag="h4" class="text-white">Total Advertising Cost</Heading>
+  $ { totalAdvertising > 0 ? totalAdvertising.toFixed(2) : 0}
+  <Hr />
+</div>
+
+<div class="space-y-4">
+  <Heading tag="h3" class="text-white">TAXES</Heading>
+  <Label class="text-white">VAT on Etsy Fees</Label>
+  $ { vatonEtsyFees > 0 ? vatonEtsyFees.toFixed(2) : 0}
+  <Label class="text-white">VAT on Cost & Shipping</Label>
+  $ { vatOnCost > 0 ? vatOnCost.toFixed(2) : 0}
+  <Heading tag="h4" class="text-white">Total Taxes</Heading>
+  $ { totalTax > 0 ? totalTax.toFixed(2) : 0}
+  <Hr />
+</div>
+
 <div class="space-y-4">
   <Label class="text-white">Cost of Goods Sold</Label>
   $ { costOfItem > 0 ? costOfItem.toFixed(2) : 0}
   <Label class="text-white">Cost of Shipping</Label>
   $ { costOfShipping > 0 ? costOfShipping.toFixed(2) : 0}
-  <Label class="text-white">VAT on Etsy Fees</Label>
-  $ { vatEtsy > 0 ? vatEtsy.toFixed(2) : 0}
-  <Label class="text-white">VAT on Cost & Shipping</Label>
-  $ { vatCosts > 0 ? vatCosts.toFixed(2) : 0}
   <Heading tag="h4" class="text-white">Total CoGS+Shipping</Heading>
   $ { totalCoGSAndShipping > 0 ? totalCoGSAndShipping.toFixed(2) : 0}
+  <Hr />
 </div>
 
 <div class="space-y-4">
   <Heading tag="h4" class="text-white">Total Revenue</Heading>
   $ {totalRevenue > 0 ? totalRevenue.toFixed(2) : 0}
   <Heading tag="h4" class="text-white">Total Costs</Heading>
-  $ {totalCosts > 0 ? totalCosts.toFixed(2) : 0}
+  $ {totalCost > 0 ? totalCost.toFixed(2) : 0}
+  <Heading tag="h4" class="text-white">Total Tax</Heading>
+  $ { totalTax > 0 ? totalTax.toFixed(2) : 0}
   <Hr />
   <Heading tag="h4" class="text-white">Net Profit</Heading>
   $ { netProfit > 0 ? netProfit.toFixed(2) : 0}
   <Heading tag="h4" class="text-white">Net Profit Margin</Heading>
-  { netProfitMargin > 0 ? netProfitMargin : 0} % 
+  { netProfitMargin > 0 ? netProfitMargin.toFixed(2) : 0} % 
 </div>
 </div>
 </Layout>

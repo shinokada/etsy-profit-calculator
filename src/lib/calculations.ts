@@ -45,15 +45,17 @@ export function calculatePaymentProcessingFee(salesPrice: number, shippingPrice:
 /*
 test: done
 */
-export function calculateAdPrice( adDollar: boolean, adValue: number, salesPrice: number, discountPrice: number): number {
-  return adDollar ? adValue : (salesPrice - discountPrice) * (adValue / 100)
+export function calculateEtsyAdPrice(isEtsyAdPriceInDollars: boolean, etsyAdValue: number, salesPrice: number, discountPrice: number, hasEtsyAds: boolean): number {
+  if (!hasEtsyAds) return 0
+  return isEtsyAdPriceInDollars ? etsyAdValue : (salesPrice - discountPrice) * (etsyAdValue / 100)
 }
 
 // off-site ads
 /*
 test: done
 */
-export function calculateOffsiteAdPrice( salesPrice: number, discountPrice: number, offSitePercentage: number): number {
+export function calculateOffsiteAdPrice(salesPrice: number, discountPrice: number, offSitePercentage: number, hasOffsiteAds: boolean): number {
+  if (!hasOffsiteAds) return 0
   return (salesPrice - discountPrice) * (offSitePercentage / 100)
 }
 
@@ -101,7 +103,7 @@ export function calculateTotalTax(vatonEtsyFees: number, vatOnCost: number): num
 /*
 test: done
 */
-export function calculateTotalCosts(totalFees: number, costOfItem: number, shippingCostForOrder: number): number {
+export function calculateTotalCost(totalFees: number, costOfItem: number, shippingCostForOrder: number): number {
   return totalFees + costOfItem + shippingCostForOrder;
 }
 
