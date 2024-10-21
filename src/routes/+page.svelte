@@ -20,9 +20,10 @@ import {
   calculateDiscount,
   calculateAdPrice,
   calculatePaymentProcessingFee,
-  calculateVatEtsy,
-  calculateVatCosts,
-  calculateEtsyTransactionFee
+  calculateVatEtsyFees,
+  calculateVatOnCosts,
+  calculateEtsyTransactionFee,
+  calculateOffsiteAdPrice
 } from '$lib/calculations';
 import {
   ETSY_LISTING_FEE
@@ -54,13 +55,15 @@ let adPrice: number = $derived(calculateAdPrice(adDollar, adValue, salesPrice, d
 let totalRevenue: number = $derived(calculateTotalRevenue(salesPrice, shippingPrice, discountPrice));
 
 let etsyListingFees: number = ETSY_LISTING_FEE;
-let transactionFee: number = $derived(calculateEtsyTransactionFee(salesPrice, shippingPrice));
+let transactionFee: number = $derived(calculateEtsyTransactionFee(salesPrice, shippingPrice, discountPrice));
 let paymentProcessingFee: number = $derived(calculatePaymentProcessingFee(salesPrice, shippingPrice, discountPrice));
 
-let totalFees: number = $derived(calculateTotalFees(salesPrice, shippingPrice, discountPrice, adPrice));
+let etsyAds: number = $derived(calculateAdPrice(adDollar,adValue, salesPrice, discountPrice));
+let offsiteAds: number = $derived(calculateOffsiteAdPrice(salesPrice, discountPrice, offsitePercentage));
+let totalFees: number = $derived(calculateTotalFees(salesPrice, shippingPrice, discountPrice, etsyAds, offsiteAds));
 
-let vatEtsy: number = $derived(calculateVatEtsy(totalFees, vatEtsyPercentage));
-let vatCosts: number = $derived(calculateVatCosts(costOfItem, costOfShipping, vatCostPercentage));
+let vatEtsy: number = $derived(calculateVatEtsyFees(totalFees, vatEtsyPercentage));
+let vatCosts: number = $derived(calculateVatOnCosts(costOfItem, costOfShipping, vatCostPercentage));
 
 let totalCoGSAndShipping: number = $derived(calculateTotalCoGSAndShipping(costOfItem, costOfShipping) + vatCosts);
 
