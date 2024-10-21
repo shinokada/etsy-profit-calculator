@@ -27,8 +27,8 @@ export function calculateTotalFees(salesPrice: number, shippingPrice: number, di
 }
 
 // 25% MVA of total Etsy fees + Cost of Goods Sold + Shipping Cost + 25% MVA of costs
-export function calculateTotalCoGSAndShipping(costOfItem: number, shippingCostForOrder: number): number {
-  return costOfItem + shippingCostForOrder;
+export function calculateTotalCoGSAndShipping(costOfItem: number, shippingCostForOrder: number, vatCostPercentage: number): number {
+  return (costOfItem + shippingCostForOrder) * (vatCostPercentage / 100);
 }
 
 export function calculateTotalRevenue(salesPrice: number, shippingPrice: number, discountPrice: number): number {
@@ -40,9 +40,11 @@ export function calculatePaymentProcessingFee(salesPrice: number, shippingPrice:
   return (totalRevenue * PAYMENT_PROCESSING_PERCENTAGE / 100) + PAYMENT_PROCESSING_FIXED_FEE
 }
 
+
 export function calculateVatEtsy( totalFees: number, vatEtsyPercentage: number ): number {
   return totalFees * vatEtsyPercentage / 100
 }
+
 
 export function calculateVatCosts(costOfItem: number, costOfShipping: number, vatCostPercentage: number): number {
   return (costOfItem + costOfShipping) * (vatCostPercentage / 100)

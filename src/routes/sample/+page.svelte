@@ -46,12 +46,13 @@ import {
   let dicountPlaceholder: string = $derived(dicountDollar ? 'Enter discount amount' : 'Enter discount percentage');
 
   // Advertising
-  let lessThan10k = $state(false);
-  let offsiteAdMethod: string = $derived(lessThan10k ? '15%' : '12%');
+  let etsyAdsDollar = $state(false);
+  let offsiteAdMethod: string = $derived(etsyAdsDollar ? '15%' : '12%');
   let adMethod: string = $derived(adDollar ? '$' : '%');
   let adPlaceholder: string = $derived(adDollar ? 'Enter ad amount' : 'Enter ad percentage');
-  let shopEarning = $state(false);
+  let etsyAds = $state(false);
   let offsiteAdOptin = $state(false);
+  let offsiteGroup = $state(0)
 
   let discountPrice: number = $derived(calculateDiscount(dicountDollar, discountValue, salesPrice));
 
@@ -96,10 +97,10 @@ import {
     <Input type="number" placeholder="Enter shipping price" bind:value={shippingPrice as number} />
     <Label>Discount</Label>
     <Toggle bind:checked={dicountDollar}>
-      Method (% | $) ({dicountMethod})
+      Method (% | $)
     </Toggle>
     <ButtonGroup class="w-full">
-      <InputAddon>{dicountMethod}</InputAddon>
+      <InputAddon class="w-9">{dicountMethod}</InputAddon>
       <Input type="number" placeholder={dicountPlaceholder} bind:value={discountValue as number} />
     </ButtonGroup>
   </div>
@@ -125,33 +126,30 @@ import {
   </div>
   <div class="space-y-4">
     <Heading tag="h3" class="text-secondary-800">Advertising</Heading>
-    <Label>Etsy Adds-Estimate Average Cost of Sale</Label>
+    <Checkbox custom bind:checked={etsyAds as boolean}>
+      <div class="w-full cursor-pointer rounded-lg border-2 border-gray-200 bg-white p-5 font-normal text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-primary-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300">
+        <div class="w-full text-lg font-semibold">Etsy Ads</div>
+        <div class="w-full text-sm">Average Cost of Sale</div>
+      </div>
+    </Checkbox>
+    {#if etsyAds}
     <Toggle bind:checked={adDollar}>Method (% | $)</Toggle>
     <ButtonGroup class="w-full">
-      <InputAddon>{adMethod}</InputAddon>
+      <InputAddon class="w-9">{adMethod}</InputAddon>
       <Input type="number" placeholder={adPlaceholder} bind:value={adValue as number} />
     </ButtonGroup>
-    <Label>Shop Earnings (last 365 days)</Label>
-    <Checkbox custom bind:checked={shopEarning as boolean}>
-      <div class="w-full cursor-pointer rounded-lg border-2 border-gray-200 bg-white p-5 font-normal text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-primary-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300">
-        <div class="w-full text-lg font-semibold">$10,000+</div>
-        <div class="w-full text-sm">A JavaScript library for building user interfaces.</div>
-      </div>
-    </Checkbox>
+    {/if}
     <Checkbox custom bind:checked={offsiteAdOptin as boolean}>
       <div class="w-full cursor-pointer rounded-lg border-2 border-gray-200 bg-white p-5 font-normal text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-primary-600 peer-checked:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300">
-        <div class="w-full text-lg font-semibold">Vue Js</div>
-        <div class="w-full text-sm">Vue.js is an model–view front end JavaScript framework.</div>
+        <div class="w-full text-lg font-semibold">Etsy Off-site Ads</div>
+        <div class="w-full text-sm">If your Etsy shop made less than $10,000 USD, you'll be charged a 15% fee for an order. Otherwise, you'll be charged a 12% fee.</div>
       </div>
     </Checkbox>
-    {#if shopEarning === true}
-     12% charge
+    {#if offsiteAdOptin === true}
+      <Radio name="etsyAdsPercent" bind:group={offsiteGroup} value="0">0%</Radio>
+      <Radio name="etsyAdsPercent" bind:group={offsiteGroup} value="12">12%</Radio>
+      <Radio name="etsyAdsPercent" bind:group={offsiteGroup} value="15">15%</Radio>
     {/if}
-    <Toggle bind:checked={lessThan10k}>Method (15% | 12%)</Toggle>
-      <ButtonGroup class="w-full">
-        <InputAddon>{offsiteAdMethod}</InputAddon>
-        <Input type="number" placeholder="Enter off-site ads" bind:value={offsiteAd as number} />
-      </ButtonGroup>
   </div>
 </div>
 <div class="space-y-8 bg-[#00533d] p-8 text-white">
