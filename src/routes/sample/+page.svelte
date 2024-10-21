@@ -19,9 +19,10 @@ import {
     calculateNetProfitMargin,
     calculateDiscount,
     calculateAdPrice,
+    calculateOffsiteAdPrice,
     calculatePaymentProcessingFee,
-    calculateVatEtsy,
-    calculateVatCosts,
+    calculateVatEtsyFees,
+    calculateVatOnCosts,
     calculateEtsyTransactionFee
   } from '$lib/calculations';
   import {
@@ -52,7 +53,7 @@ import {
   let adPlaceholder: string = $derived(adDollar ? 'Enter ad amount' : 'Enter ad percentage');
   let etsyAds = $state(false);
   let offsiteAdOptin = $state(false);
-  let offsiteGroup = $state(0)
+  let offsitePercentage = $state(0)
 
   let discountPrice: number = $derived(calculateDiscount(dicountDollar, discountValue, salesPrice));
 
@@ -64,12 +65,16 @@ import {
   let transactionFee: number = $derived(calculateEtsyTransactionFee(salesPrice, shippingPrice, discountPrice));
   let paymentProcessingFee: number = $derived(calculatePaymentProcessingFee(salesPrice, shippingPrice, discountPrice));
 
-  let totalFees: number = $derived(calculateTotalFees(salesPrice, shippingPrice, discountPrice, adPrice));
+  // adDollar: boolean, adValue: number, salesPrice: number, discountPrice: number
+  let etsyAdsPrice: number = $derived(calculateAdPrice(adDollar,adValue, salesPrice, discountPrice));
 
-  let vatEtsy: number = $derived(calculateVatEtsy(totalFees, vatEtsyPercentage));
-  let vatCosts: number = $derived(calculateVatCosts(costOfItem, costOfShipping, vatCostPercentage));
+  // salesPrice: number, discountPrice: number, offSitePercentage: number
+  let offsiteAdsPrice: number = $derived(calculateOffsiteAdPrice(salesPrice, discountPrice, offsitePercentage));
+  // salesPrice: number, shippingPrice: number, discountPrice: number, adPrice: number, etsyAds: number, offsiteAds: number
+  let totalFees: number = $derived(calculateTotalFees(salesPrice, shippingPrice, discountPrice, adPrice, etsyAdsPrice, offsiteAdsPrice));
 
-
+  let vatEtsy: number = $derived(calculateVatEtsyFees(totalFees, vatEtsyPercentage));
+  let vatCosts: number = $derived(calculateVatOnCosts(costOfItem, costOfShipping, vatCostPercentage));
 
   let totalCoGSAndShipping: number = $derived(calculateTotalCoGSAndShipping(costOfItem, costOfShipping) + vatCosts);
 
@@ -146,9 +151,9 @@ import {
       </div>
     </Checkbox>
     {#if offsiteAdOptin === true}
-      <Radio name="etsyAdsPercent" bind:group={offsiteGroup} value="0">0%</Radio>
-      <Radio name="etsyAdsPercent" bind:group={offsiteGroup} value="12">12%</Radio>
-      <Radio name="etsyAdsPercent" bind:group={offsiteGroup} value="15">15%</Radio>
+      <Radio name="etsyAdsPercent" bind:group={offsitePercentage} value="0">0%</Radio>
+      <Radio name="etsyAdsPercent" bind:group={offsitePercentage} value="12">12%</Radio>
+      <Radio name="etsyAdsPercent" bind:group={offsitePercentage} value="15">15%</Radio>
     {/if}
   </div>
 </div>

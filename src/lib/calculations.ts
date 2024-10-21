@@ -7,65 +7,116 @@ import {
   ETSY_OFFSITE_AD_PERCENTAGE_LESS_THAN_10K_SALES
 } from './constants';
 
+// REVENE
+/*
+test: done
+*/
 export function calculateDiscount(dicountDollar: boolean, discountValue: number, salesPrice: number): number {
   return dicountDollar ? discountValue : salesPrice * discountValue / 100;
 }
 
-export function calculateAdPrice( adDollar: boolean, adValue: number, salesPrice: number, discountPrice: number): number {
-  return adDollar ? adValue : (salesPrice - discountPrice) * (adValue / 100)
-}
-
-export function calculateEtsyTransactionFee(salesPrice: number, shippingPrice: number, discountPrice: number): number {
-  return (salesPrice + shippingPrice - discountPrice) * ETSY_TRANSACTION_PERCENTAGE / 100;
-}
-
-export function calculateTotalFees(salesPrice: number, shippingPrice: number, discountPrice: number, adPrice: number): number {
-  let etsytransactionFee = calculateEtsyTransactionFee(salesPrice, shippingPrice, discountPrice);
-  let paymentProcessingFee = calculatePaymentProcessingFee(salesPrice, shippingPrice, discountPrice);
-  
-  return ETSY_LISTING_FEE + etsytransactionFee + paymentProcessingFee + adPrice;
-}
-
-// 25% MVA of total Etsy fees + Cost of Goods Sold + Shipping Cost + 25% MVA of costs
-export function calculateTotalCoGSAndShipping(costOfItem: number, shippingCostForOrder: number, vatCostPercentage: number): number {
-  return (costOfItem + shippingCostForOrder) * (vatCostPercentage / 100);
-}
-
+/*
+test: done
+*/
 export function calculateTotalRevenue(salesPrice: number, shippingPrice: number, discountPrice: number): number {
   return salesPrice + shippingPrice - discountPrice;
 }
 
+// COSTS
+// Etsy Listing Fees: ETSY_LISTING_FEE
+/*
+test: done
+*/
+export function calculateEtsyTransactionFee(salesPrice: number, shippingPrice: number, discountPrice: number): number {
+  return (salesPrice + shippingPrice - discountPrice) * ETSY_TRANSACTION_PERCENTAGE / 100;
+}
+
+// Payment Processing Fee
+/*
+test: done
+*/
 export function calculatePaymentProcessingFee(salesPrice: number, shippingPrice: number, discountPrice: number): number {
   const totalRevenue = calculateTotalRevenue(salesPrice, shippingPrice, discountPrice);
   return (totalRevenue * PAYMENT_PROCESSING_PERCENTAGE / 100) + PAYMENT_PROCESSING_FIXED_FEE
 }
 
+// Advertising
+// Etsy Ads
+/*
+test: done
+*/
+export function calculateAdPrice( adDollar: boolean, adValue: number, salesPrice: number, discountPrice: number): number {
+  return adDollar ? adValue : (salesPrice - discountPrice) * (adValue / 100)
+}
 
-export function calculateVatEtsy( totalFees: number, vatEtsyPercentage: number ): number {
+// off-site ads
+/*
+test: done
+*/
+export function calculateOffsiteAdPrice( salesPrice: number, discountPrice: number, offSitePercentage: number): number {
+  return (salesPrice - discountPrice) * (offSitePercentage / 100)
+}
+
+// TAXES
+/*
+test: done
+*/
+export function calculateVatEtsyFees( totalFees: number, vatEtsyPercentage: number ): number {
   return totalFees * vatEtsyPercentage / 100
 }
 
-
-export function calculateVatCosts(costOfItem: number, costOfShipping: number, vatCostPercentage: number): number {
+/*
+test: done
+*/
+export function calculateVatOnCosts(costOfItem: number, costOfShipping: number, vatCostPercentage: number): number {
   return (costOfItem + costOfShipping) * (vatCostPercentage / 100)
 }
 
-export function calculateTotalCosts(costOfItem: number, shippingCostForOrder: number, vatPercentageOnCostAndShipping: number): number {
-  const cogsAndShipping = calculateTotalCoGSAndShipping(costOfItem, shippingCostForOrder);
-  return cogsAndShipping * (1 + vatPercentageOnCostAndShipping);
+// FEES
+/*
+test: done
+*/
+export function calculateTotalFees(salesPrice: number, shippingPrice: number, discountPrice: number, etsyAds: number, offsiteAds: number): number {
+  let etsytransactionFee = calculateEtsyTransactionFee(salesPrice, shippingPrice, discountPrice);
+  let paymentProcessingFee = calculatePaymentProcessingFee(salesPrice, shippingPrice, discountPrice);
+
+  return ETSY_LISTING_FEE + etsytransactionFee + paymentProcessingFee + etsyAds + offsiteAds;
 }
 
-export function calculateNetProfit(salesPrice: number, shippingPrice: number, costOfItem: number, shippingCostForOrder: number, vatPercentageOnCostAndShipping: number, vatPercentageOnEtsyFees: number, discountPercentage: number, discountPrice: number): number {
-  const totalRevenue = calculateTotalRevenue(salesPrice, shippingPrice, discountPrice);
-  const totalCosts = calculateTotalCosts(costOfItem, shippingCostForOrder, vatPercentageOnCostAndShipping);
-  const totalFees = calculateTotalFees(salesPrice, shippingPrice, discountPercentage, vatPercentageOnEtsyFees);
-  return totalRevenue - totalCosts - totalFees;
+/*
+test: done
+*/
+export function calculateTotalCoGSAndShipping(costOfItem: number, shippingCostForOrder: number): number {
+  return costOfItem + shippingCostForOrder;
 }
 
-export function calculateNetProfitMargin(salesPrice: number, shippingPrice: number, costOfItem: number, shippingCostForOrder: number, vatPercentageOnCostAndShipping: number, vatPercentageOnEtsyFees: number, discountPercentage: number, discountPrice: number): number {
-  const netProfit = calculateNetProfit(salesPrice, shippingPrice, costOfItem, shippingCostForOrder, vatPercentageOnCostAndShipping, vatPercentageOnEtsyFees, discountPercentage, discountPrice);
-  const totalRevenue = calculateTotalRevenue(salesPrice, shippingPrice, discountPrice);
-  return netProfit / totalRevenue;
+/*
+test: done
+*/
+export function calculateTotalTax(vatonEtsyFees: number, vatOnCost: number): number {
+  return vatonEtsyFees + vatOnCost
+}
+
+// Total fees + Total CoGS + shipping cose
+/*
+test: done
+*/
+export function calculateTotalCosts(totalFees: number, costOfItem: number, shippingCostForOrder: number): number {
+  return totalFees + costOfItem + shippingCostForOrder;
+}
+
+/*
+test: done
+*/
+export function calculateNetProfit(totalRevenue: number, totalCost: number, totalTax: number): number {
+  return totalRevenue - totalCost - totalTax;
+}
+
+/*
+test: done
+*/
+export function calculateNetProfitMargin(netProfit: number, totalRevenue: number): number {
+  return netProfit / totalRevenue * 100;
 }
 
 export function formatNumber(value: number): string {
