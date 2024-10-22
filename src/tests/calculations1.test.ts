@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { calculateTotalFees, calculateDiscount, calculateEtsyAdPrice, calculateTotalCoGSAndShipping, calculateTotalRevenue, calculateEtsyTransactionFee, calculatePaymentProcessingFee, calculateOffsiteAdPrice, calculateVatEtsyFees, calculateVatOnCosts, calculateTotalTax, calculateTotalCost, calculateNetProfit, calculateNetProfitMargin } from './lib/calculations';
+import { calculateTotalFees, calculateDiscount, calculateEtsyAdPrice, calculateTotalCoGSAndShipping, calculateTotalRevenue, calculateEtsyTransactionFee, calculatePaymentProcessingFee, calculateOffsiteAdPrice, calculateVatEtsyFees, calculateVatOnCosts, calculateTotalTax, calculateTotalCost, calculateNetProfit, calculateNetProfitMargin } from '../lib/calculations';
 
 // condition values
 const salesPrice = 25;
@@ -10,13 +10,17 @@ const shippingCostForOrder = 6.79;
 const vatPercentageOnCostAndShipping = 25;
 const vatPercentageOnEtsyFees = 25;
 const dicountDollar = false;
-const adDollar = false;
-const adValue = 0;
+const etsyAdValue = 0;
 const offsitePercentage = 0;
+const isEtsyAdPriceInDollars = false;
+const hasEtsyAds = false;
+const hasOffsiteAds = false;
 // calculated values
 const discountPrice: number = calculateDiscount(dicountDollar, discountPercentage, salesPrice);
-let etsyAds: number = calculateEtsyAdPrice(adDollar,adValue, salesPrice, discountPrice);
-let offsiteAds: number = calculateOffsiteAdPrice(salesPrice, discountPrice, offsitePercentage);
+// isEtsyAdPriceInDollars: boolean, etsyAdValue: number, salesPrice: number, discountPrice: number, hasEtsyAds: boolean
+let etsyAds: number = calculateEtsyAdPrice(isEtsyAdPriceInDollars, etsyAdValue, salesPrice, discountPrice, hasEtsyAds);
+// salesPrice: number, discountPrice: number, offSitePercentage: number, hasOffsiteAds: boolean
+let offsiteAds: number = calculateOffsiteAdPrice(salesPrice, discountPrice, offsitePercentage, hasOffsiteAds);
 const totalFees: number = calculateTotalFees(salesPrice, shippingPrice, discountPrice, etsyAds, offsiteAds);
 const vatonEtsyFees: number = calculateVatEtsyFees(totalFees, vatPercentageOnEtsyFees);
 const vatOnCost: number = calculateVatOnCosts(costOfItem, shippingCostForOrder, vatPercentageOnCostAndShipping);
@@ -33,14 +37,14 @@ describe('calculateDiscount', () => {
 
 describe('calculateEtsyAdPrice', () => {
   it('calculates Ad price', () => {
-    expect(calculateEtsyAdPrice(adDollar, adValue, salesPrice, discountPrice)).toBeCloseTo(0, 2);
+    expect(calculateEtsyAdPrice(isEtsyAdPriceInDollars, etsyAdValue, salesPrice, discountPrice, hasEtsyAds)).toBeCloseTo(0, 2);
   });
 });
 
 // calculateOffsiteAdPrice (salesPrice: number, discountPrice: number, offSitePercentage: number)
 describe('calculateOffsiteAdPrice', () => {
   it('calculates offsite ad price', () => {
-    expect(calculateOffsiteAdPrice(salesPrice, discountPrice, offsitePercentage)).toBeCloseTo(0, 2);
+    expect(calculateOffsiteAdPrice(salesPrice, discountPrice, offsitePercentage, hasOffsiteAds)).toBeCloseTo(0, 2);
   })
 });
 
