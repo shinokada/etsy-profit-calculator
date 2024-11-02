@@ -201,9 +201,9 @@
 				</div>
 			</Checkbox>
 			{#if hasOffsiteAds === true}
-				<Radio name="etsyAdsPercent" bind:group={offsitePercentage} value="0">0%</Radio>
-				<Radio name="etsyAdsPercent" bind:group={offsitePercentage} value="12">12%</Radio>
-				<Radio name="etsyAdsPercent" bind:group={offsitePercentage} value="15">15%</Radio>
+				<Radio name="etsyAdsPercent" bind:group={offsitePercentage} value={0}>0%</Radio>
+				<Radio name="etsyAdsPercent" bind:group={offsitePercentage} value={12}>12%</Radio>
+				<Radio name="etsyAdsPercent" bind:group={offsitePercentage} value={15}>15%</Radio>
 			{/if}
 			hasOffsiteAds: {hasOffsiteAds}
 			offsitePercentage: {offsitePercentage}
