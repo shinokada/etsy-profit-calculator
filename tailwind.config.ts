@@ -10,9 +10,20 @@ export default {
 	theme: {
 		extend: {
 			colors: {
-				 // orange
-        primary: {"50":"#fff7ed","100":"#ffedd5","200":"#fed7aa","300":"#fdba74","400":"#fb923c","500":"#f97316","600":"#ea580c","700":"#c2410c","800":"#9a3412","900":"#7c2d12"},
-				
+				// orange
+				primary: {
+					'50': '#fff7ed',
+					'100': '#ffedd5',
+					'200': '#fed7aa',
+					'300': '#fdba74',
+					'400': '#fb923c',
+					'500': '#f97316',
+					'600': '#ea580c',
+					'700': '#c2410c',
+					'800': '#9a3412',
+					'900': '#7c2d12'
+				},
+
 				secondary: {
 					'50': '#f0f9ff',
 					'100': '#e0f2fe',
@@ -28,7 +39,7 @@ export default {
 			}
 		},
 		fontFamily: {
-			'body': [
+			body: [
 				'Quicksand',
 				'Inter',
 				'ui-sans-serif',
@@ -46,7 +57,7 @@ export default {
 				'Segoe UI Symbol',
 				'Noto Color Emoji'
 			],
-			'sans': [
+			sans: [
 				'Quicksand',
 				'Inter',
 				'ui-sans-serif',

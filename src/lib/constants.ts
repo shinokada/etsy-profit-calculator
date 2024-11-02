@@ -1,4 +1,4 @@
-export const ETSY_LISTING_FEE = 0.20;
+export const ETSY_LISTING_FEE = 0.2;
 export const ETSY_TRANSACTION_PERCENTAGE = 6.5;
 export const PAYMENT_PROCESSING_PERCENTAGE = 3;
 export const PAYMENT_PROCESSING_FIXED_FEE = 0.25;
