@@ -22,3 +22,4 @@ vite.config.ts.timestamp-*
 
 /test-results/*
 /src/routes/test-dir
+/.vercel
