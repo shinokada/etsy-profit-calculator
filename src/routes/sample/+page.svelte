@@ -11,7 +11,7 @@
 		Radio,
 		Checkbox,
 		Span
-	} from 'svelte-5-ui-lib';
+	} from 'flowbite-svelte';
 
 	import {
 		calculateTotalFees,
