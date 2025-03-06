@@ -14,7 +14,7 @@ import {
 	calculateTotalCost,
 	calculateNetProfit,
 	calculateNetProfitMargin
-} from '../lib/calculations';
+} from '../src/lib/calculations';
 
 // condition values
 const salesPrice = 25;
@@ -25,11 +25,11 @@ const shippingCostForOrder = 6.79;
 const vatPercentageOnCostAndShipping = 25;
 const vatPercentageOnEtsyFees = 25;
 const dicountDollar = false;
-const etsyAdValue = 10; // 10%
-const offsitePercentage = 0;
+const etsyAdValue = 0;
+const offsitePercentage = 12; // 12%
 const isEtsyAdPriceInDollars = false;
-const hasEtsyAds = true; // for etsyAdValue
-const hasOffsiteAds = false;
+const hasEtsyAds = false;
+const hasOffsiteAds = true; // for offsitePercentage
 // calculated values
 const discountPrice: number = calculateDiscount(dicountDollar, discountPercentage, salesPrice);
 // isEtsyAdPriceInDollars: boolean, etsyAdValue: number, salesPrice: number, discountPrice: number, hasEtsyAds: boolean
@@ -65,14 +65,14 @@ const totalCost = calculateTotalCost(totalFees, costOfItem, shippingCostForOrder
 const totalRevenue = calculateTotalRevenue(salesPrice, shippingPrice, discountPrice);
 const netProfit = calculateNetProfit(totalRevenue, totalCost, totalTax);
 
-describe('3: calculateDiscount', () => {
-	it('3: calculates discount price', () => {
+describe('4: calculateDiscount', () => {
+	it('4: calculates discount price', () => {
 		expect(calculateDiscount(dicountDollar, discountPercentage, salesPrice)).toBeCloseTo(5, 2);
 	});
 });
 
-describe('3: calculateEtsyAdPrice', () => {
-	it('3: calculates Ad price', () => {
+describe('4: calculateEtsyAdPrice', () => {
+	it('4: calculates Ad price', () => {
 		expect(
 			calculateEtsyAdPrice(
 				isEtsyAdPriceInDollars,
@@ -81,29 +81,29 @@ describe('3: calculateEtsyAdPrice', () => {
 				discountPrice,
 				hasEtsyAds
 			)
-		).toBeCloseTo(2.0, 2);
-	});
-});
-
-// calculateOffsiteAdPrice (salesPrice: number, discountPrice: number, offSitePercentage: number)
-describe('3: calculateOffsiteAdPrice', () => {
-	it('3: calculates offsite ad price', () => {
-		expect(
-			calculateOffsiteAdPrice(salesPrice, discountPrice, offsitePercentage, hasOffsiteAds)
 		).toBeCloseTo(0, 2);
 	});
 });
 
+// calculateOffsiteAdPrice (salesPrice: number, discountPrice: number, offSitePercentage: number)
+describe('4: calculateOffsiteAdPrice', () => {
+	it('4: calculates offsite ad price', () => {
+		expect(
+			calculateOffsiteAdPrice(salesPrice, discountPrice, offsitePercentage, hasOffsiteAds)
+		).toBeCloseTo(2.4, 2);
+	});
+});
+
 // calculateVatEtsy( totalFees: number, vatEtsyPercentage: number  )
-describe('3: calculateVatEtsyFees', () => {
-	it('3: calculates vat etsy fees', () => {
-		expect(calculateVatEtsyFees(totalFees, vatPercentageOnEtsyFees)).toBeCloseTo(1.218, 3);
+describe('4: calculateVatEtsyFees', () => {
+	it('4: calculates vat etsy fees', () => {
+		expect(calculateVatEtsyFees(totalFees, vatPercentageOnEtsyFees)).toBeCloseTo(1.318, 3);
 	});
 });
 
 // calculateVatCosts(costOfItem: number, costOfShipping: number, vatCostPercentage: number)
-describe('3: calculateVatOnCosts', () => {
-	it('3: calculates vat on costs', () => {
+describe('4: calculateVatOnCosts', () => {
+	it('4: calculates vat on costs', () => {
 		expect(
 			Math.round(
 				calculateVatOnCosts(costOfItem, shippingCostForOrder, vatPercentageOnCostAndShipping) * 100
@@ -113,59 +113,59 @@ describe('3: calculateVatOnCosts', () => {
 });
 
 // salesPrice: number, shippingPrice: number, discountPrice: number, etsyAds: number, offsiteAds: number
-describe('3: calculateTotalFees', () => {
-	it('3: calculates total fees', () => {
+describe('4: calculateTotalFees', () => {
+	it('4: calculates total fees', () => {
 		expect(
 			calculateTotalFees(salesPrice, shippingPrice, discountPrice, etsyAds, offsiteAds)
-		).toBeCloseTo(4.873, 2);
+		).toBeCloseTo(5.273, 2);
 	});
 });
 
 // calculateTotalCoGSAndShipping(costOfItem: number, shippingCostForOrder: number)
-describe('3: calculateTotalCoGSAndShipping', () => {
-	it('3: calculates total cogs and shipping', () => {
+describe('4: calculateTotalCoGSAndShipping', () => {
+	it('4: calculates total cogs and shipping', () => {
 		expect(calculateTotalCoGSAndShipping(costOfItem, shippingCostForOrder)).toBeCloseTo(10.38, 2);
 	});
 });
 
 // calculateTotalTax(vatonEtsyFees: number, vatOnCost: number)
-describe('3: calculateTotalTax', () => {
-	it('3: calculates total tax', () => {
-		expect(calculateTotalTax(vatonEtsyFees, vatOnCost)).toBeCloseTo(3.813, 3);
+describe('4: calculateTotalTax', () => {
+	it('4: calculates total tax', () => {
+		expect(calculateTotalTax(vatonEtsyFees, vatOnCost)).toBeCloseTo(3.913, 3);
 	});
 });
 
 // calculateTotalCost(totalFees: number, costOfItem: number, shippingCostForOrder: number)
-describe('3: calculateTotalCost', () => {
-	it('3: calculates total costs', () => {
-		expect(calculateTotalCost(totalFees, costOfItem, shippingCostForOrder)).toBeCloseTo(15.253, 3);
+describe('4: calculateTotalCost', () => {
+	it('4: calculates total costs', () => {
+		expect(calculateTotalCost(totalFees, costOfItem, shippingCostForOrder)).toBeCloseTo(15.653, 2);
 	});
 });
 
 // calculateTotalRevenue(salesPrice: number, shippingPrice: number, discountPrice: number)
-describe('3: calculateTotalRevenue', () => {
-	it('3: calculates total revenue', () => {
+describe('4: calculateTotalRevenue', () => {
+	it('4: calculates total revenue', () => {
 		expect(calculateTotalRevenue(salesPrice, shippingPrice, discountPrice)).toBeCloseTo(25.5, 2);
 	});
 });
 
 // calculateNetProfit(totalRevenue: number, totalCosts: number, totalTax: number)
-describe('3: calculateNetProfit(totalRevenue: number, totalCost: number, totalTax: number)', () => {
-	it('3: calculate net profit', () => {
-		expect(calculateNetProfit(totalRevenue, totalCost, totalTax)).toBeCloseTo(6.434, 3);
+describe('4: calculateNetProfit(totalRevenue: number, totalCost: number, totalTax: number)', () => {
+	it('4: calculate net profit', () => {
+		expect(calculateNetProfit(totalRevenue, totalCost, totalTax)).toBeCloseTo(5.934, 2);
 	});
 });
 
 // calculateNetProfitMargin(netProfit: number, totalRevenue: number)
-describe('3: calculateNetProfitMargin', () => {
-	it('3: calculate net profit margin', () => {
-		expect(calculateNetProfitMargin(netProfit, totalRevenue)).toBeCloseTo(25.23, 2);
+describe('4: calculateNetProfitMargin', () => {
+	it('4: calculate net profit margin', () => {
+		expect(calculateNetProfitMargin(netProfit, totalRevenue)).toBeCloseTo(23.27, 2);
 	});
 });
 
 // calculateEtsyTransactionFee(salesPrice: number, shippingPrice: number)
-describe('3: calculateEtsyTransactionFee', () => {
-	it('3: calculates etsy transaction fee', () => {
+describe('4: calculateEtsyTransactionFee', () => {
+	it('4: calculates etsy transaction fee', () => {
 		expect(calculateEtsyTransactionFee(salesPrice, shippingPrice, discountPrice)).toBeCloseTo(
 			1.66,
 			2
@@ -174,8 +174,8 @@ describe('3: calculateEtsyTransactionFee', () => {
 });
 
 // calculatePaymentProcessingFee(salesPrice: number, shippingPrice: number, discountPrice: number)
-describe('3: calculatePaymentProcessingFee', () => {
-	it('3: calculates payment processing fee', () => {
+describe('4: calculatePaymentProcessingFee', () => {
+	it('4: calculates payment processing fee', () => {
 		expect(calculatePaymentProcessingFee(salesPrice, shippingPrice, discountPrice)).toBeCloseTo(
 			1.02,
 			2

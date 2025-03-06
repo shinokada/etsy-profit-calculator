@@ -14,7 +14,7 @@ import {
 	calculateTotalCost,
 	calculateNetProfit,
 	calculateNetProfitMargin
-} from '../lib/calculations';
+} from '../src/lib/calculations';
 
 // condition values
 const salesPrice = 30;
