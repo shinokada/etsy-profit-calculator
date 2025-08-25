@@ -42,8 +42,8 @@ importers:
         specifier: ^3.11.0
         version: 3.11.0(eslint@9.34.0(jiti@2.5.1))(svelte@5.38.3)
       flowbite-svelte-icons:
-        specifier: ^2.3.0
-        version: 2.3.0(svelte@5.38.3)
+        specifier: ^3.0.0
+        version: 3.0.0(svelte@5.38.3)
       globals:
         specifier: ^16.3.0
         version: 16.3.0
@@ -981,8 +981,8 @@ packages:
   flatted@3.3.3:
     resolution: {integrity: sha512-GX+ysw4PBCz0PzosHDepZGANEuFCMLrnRTiEy9McGjmkCQYwRq4A/X786G/fjM/+OjsWSU1ZrY5qyARZmO/uwg==}
 
-  flowbite-svelte-icons@2.3.0:
-    resolution: {integrity: sha512-D7EeVAGt3NtufTjps8xKRYyZpAaQbuX+8PkohVqG07RsJf9pWJHwZ+RPBi3kUlECnq0WtYU/3jnLuz7Km4Y79g==}
+  flowbite-svelte-icons@3.0.0:
+    resolution: {integrity: sha512-7qm8vLOW4uHq1UeDDx0DLrLZXiE8H0i/XCFjGMsSAhIFfpkyIwlE4qXlmy8mjO4p+rzKNbVALQIoDEnuo8tPgg==}
     peerDependencies:
       svelte: ^5.0.0
 
@@ -2514,7 +2514,7 @@ snapshots:
 
   flatted@3.3.3: {}
 
-  flowbite-svelte-icons@2.3.0(svelte@5.38.3):
+  flowbite-svelte-icons@3.0.0(svelte@5.38.3):
     dependencies:
       clsx: 2.1.1
       svelte: 5.38.3
